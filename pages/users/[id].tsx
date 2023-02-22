@@ -1,12 +1,28 @@
 import MainContainer from "../../components/MainContainer"
 
-const User = ({ user }: any) => {    
+const User = ({ user, posts }: any) => {
+
+
     return (
         <MainContainer>
             <section>
                 <h2>
                     { user.name }
                 </h2>
+                <h3>Post</h3>
+                <ul>
+                    {
+                        posts.map((elem: any) => {
+                            return (
+                                <li>
+                                    {
+                                        elem.body
+                                    }
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
             </section>
         </MainContainer>
     )
@@ -15,11 +31,14 @@ const User = ({ user }: any) => {
 export default User
 
 export async function getServerSideProps({ params }: any) {
-    const res =
+    const userRequest =
         await fetch(`https://jsonplaceholder.typicode.com/users/${ params.id }`)
-    const user = await res.json()
+    const postsRequest = await fetch('http://localhost:3000/api/posts')
+
+    const user = await userRequest.json()
+    const posts = await postsRequest.json()
 
     return {
-      props: { user },
+      props: { user, posts },
     }
 }
